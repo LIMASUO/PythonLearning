@@ -1,1 +1,135 @@
-         
+#!usr/bin/env python3
+
+import sys
+import csv
+
+class Args(object):
+    
+    def __init__(self, args):
+        
+        self.configfile = []
+        self.userdatafile = []
+        self.gongzifile = []
+        self._update(args)
+
+    def _update(self, args):
+
+        for arg in args:
+            index = args.index(arg) + 1
+            if arg == '-c':
+                self.configfile = args[index]
+            if arg == '-d':
+                self.userdatafile = args[index]
+            if arg == '-o':
+                self.gongzifile = args[index]
+
+
+class Config(object):
+
+    def __init__(self, configfile):
+        
+        self.config = {}
+        self._update(configfile)
+
+    def _update(self, configfile):
+
+        try:
+            fil = open(configfile, 'r')
+     
+            for x in fil:
+                str_ = x.strip()
+                key, value = str_.split('=')
+                key = key.strip()
+                value = value.strip()
+                self.config[key] = float(value)
+            fil.close()
+        except IOError:
+            print('file does not exist or can not be read')
+            exit()
+
+class UserData():
+
+    def __init__(self, userdatafile):
+
+        self.userdata = {}       
+        self._update(userdatafile)
+        
+    def _update(self, userdatafile):
+	
+        try:
+            file_ = open(userdatafile, 'r')
+            for i, x in enumerate(file_):
+                key, value = x.split(',')
+                self.userdata[key] = value
+            file_.close()
+        except IOError:
+            print('file does not exit or can not be read')
+            exit()
+
+class IncomeTaxCalculator(object):
+
+    def calc_for_all_userdata(self, userdata, taxconfig):
+
+        sbrate = taxconfig['YangLao'] + taxconfig['YiLiao'] + taxconfig['ShiYe'] + taxconfig['GongShang'] + taxconfig['ShengYu'] + taxconfig['GongJiJin']
+	
+        usergongzi = []
+        for key, value in userdata.items():
+        
+            key = int(key)
+            value = int(value)
+            if value < float(taxconfig['JiShuL']):
+               sbJS = float(taxconfig['JiShuL'])
+            elif value > float(taxconfig['JiShuH']):
+                sbJS = float(taxconfig['JiShuH'])
+            else:
+                sbJS = value
+            sbJE = sbJS * sbrate
+            taxJS = sbJS - sbJE - 3500
+            if taxJS < 0:
+                tax = 0
+                get = value - sbJE
+            else:
+                if taxJS <= 1500:
+                    tax = taxJS * 0.03
+                elif taxJS <= 4500:
+                    tax = taxJS * 0.1 - 105
+                elif taxJS <= 9000:
+                    tax = taxJS *0.2 - 555
+                elif taxJS <= 35000:
+                    tax = taxJS *0.25 - 1005
+                elif taxJS <= 55000:
+                    tax = taxJS *0.3 - 2755
+                elif taxJS <= 80000:
+                    tax = taxJS *0.35 - 5505
+                else:
+                    tax = taxJS *0.45 - 13505
+                get = value - tax - sbJE
+            charl = '{},{},{:.2f},{:.2f},{:.2f}'.format(key, value, sbJE, tax, get)
+            usergongzi.append(charl.split(','))
+        return usergongzi
+
+    
+    def export(self, userdata, taxconfig, gongzif, default = 'csv'):
+	
+        result = self.calc_for_all_userdata(userdata, taxconfig)
+        with open(gongzif, 'w') as f:
+            writer = csv.writer(f)
+            for x in result:
+                writer.writerow(x)
+
+if __name__ == '__main__':
+    
+
+    a = sys.argv[1:]
+    Arg = Args(a)
+    cfgf = Arg.configfile
+    ursdf = Arg.userdatafile
+    ursgzf = Arg.gongzifile
+    Con = Config(cfgf)
+    config = Con.config
+    User = UserData(ursdf)
+    usrdata = User.userdata
+    cal = IncomeTaxCalculator()
+    cal.export(usrdata, config, ursgzf)
+
+        
