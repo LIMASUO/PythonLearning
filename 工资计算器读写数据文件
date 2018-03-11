@@ -84,7 +84,7 @@ class IncomeTaxCalculator(object):
             else:
                 sbJS = value
             sbJE = sbJS * sbrate
-            taxJS = sbJS - sbJE - 3500
+            taxJS = value - sbJE - 3500
             if taxJS < 0:
                 tax = 0
                 get = value - sbJE
