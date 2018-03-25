@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <p> 文章列表如下： </p>
+        {% for file in jsonl %}
+            <p> {{ file }} </p>
+        {% endfor %}
+{% endblock %}
