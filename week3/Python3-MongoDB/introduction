@@ -1,0 +1,107 @@
+Python3 获取 MongoDB 数据
+介绍
+
+实验楼的比赛排名使用 MongoDB 处理，现在有一系列的用户数据，需要完善一个排名程序 /home/shiyanlou/Code/getrank.py，输入任意用户的 ID，返回该用户的排名及分数和花费的时间。如果用户没有比赛记录，则打印 NOTFOUND 的信息。
+
+首先需要在 Xfce 终端中执行下面的命令部署实验环境：
+
+# 安装 pymongo
+$ sudo pip3 install pymongo
+
+# 启动 Mongodb 服务
+$ sudo service mongod start
+
+# 下载 Mongodb JSON 数据文件
+$ cd /home/shiyanlou/Code/
+$ wget http://labfile.oss.aliyuncs.com/courses/1013/week3/contests.json
+
+# 将数据导入 Mongodb
+$ mongoimport --db shiyanlou --collection contests --file /home/shiyanlou/Code/contests.json --jsonArray
+
+执行完成之后 MongoDB 已经运行，可以使用 mongo 直接连接 MongoDB 查看数据。数据存储的 database 是 shiyanlou，collection 是 contests。测试数据一共 20 条，格式如下：
+
+{
+'user_id': 1,
+'challenge_id': 1,
+'score': 10,
+'submit_time': 130
+}
+
+其中：
+
+    user_id：用户 ID
+    challenge_id：挑战的 ID
+    score：用户完成本次挑战得到的分数
+    submit_time：用户完成本次挑战花费的时间（分钟）
+
+我们需要完善 /home/shiyanlou/Code/getrank.py 中的 get_rank 函数部分。让函数可以正确返回用户的排名、总分数和总时间，需要注意：
+
+    每个用户有多条记录，所得的分数和花费的时间为多条记录的总和
+    排名规则首先按分数排名，如果分数相同则花费的总时间越少则排名越高
+    python3 getrank.py 1 表示获取 user_id 为 1 的用户的数据
+
+执行示例如下：
+
+# 获取 user_id 为 1 的用户的排名、总分数、总时间，每个数据之间由空格隔开
+$ python3 /home/shiyanlou/Code/getrank.py 1
+(4, 50, 221)
+
+上述例子中，4 为 user_id 为 1 的用户的排名，50 为其总分数，221 为花费的总时间。
+目标
+
+完成任务需要达成的目标：
+
+    保持 MongoDB 服务运行
+    不要改变 getrank.py 程序的位置（/home/shiyanlou/Code/getrank.py），逻辑和输出格式，只需要完成其中缺少的 TODO 代码片段
+    如果需要安装缺少的 Python 包，直接使用 sudo pip3 安装即可，不要使用 virtualenv
+    不要增删已有的 MongoDB 数据
+    如果参数数量不准确或者格式不正确，需要打印一行的错误信息：print("Parameter Error")
+
+getrank.py 示例代码框架如下，需要补充下面代码中的 TODO 部分：
+
+# -*- coding: utf-8 -*-
+
+import sys
+from pymongo import MongoClient
+
+def get_rank(user_id):
+    client = MongoClient()
+    db = client.shiyanlou
+    contests = db.contests
+
+    # 计算用户 user_id 的排名、总分数及花费的总时间
+    TODO
+
+    # 依次返回排名，分数和时间，不能修改顺序
+    return rank, score, submit_time
+
+if __name__ == '__main__':
+
+    '''
+    1. 判断参数格式是否符合要求
+    2. 获取 user_id 参数
+    '''
+    TODO
+
+    # 根据用户 ID 获取用户排名，分数和时间
+    userdata = get_rank(user_id)
+    print(userdata)
+
+提示语
+
+    pymongo 中的 MongoClient 基本用法请参考第二周的 MongoDB 一节实验
+    最简单的思路是读取所有的数据，然后计算每个用户的总成绩和总时间，然后再根据排名规则（首先按分数排名，如果分数相同则花费的总时间越少则排名越高）进行排序，得到名次，将这些数据存入到一个字典中，字典的 key 为 user_id，value为一个列表 [rank, score, submit_time]
+    当函数传入 user_id，从字典中返回数据
+
+但按照上述思路实现后就已经可以达到了挑战的要求了，但是我们的程序需要耗费大量的内存资源，可以考虑优化：
+
+    上述的实现方案中是读取所有数据后排序，但是真实的场景中数据量很大，可以考虑使用 MongoDB 内置的排序方法。
+    MongoDB 中的 sort 可以对多列进行排序，但是我们的数据中仍然需要对每个用户的成绩和时间进行加和后再排序，该如何操作呢？
+
+知识点
+
+    Python3 基本语法
+    MongoDB 使用
+    Pymongo 模块
+
+*本课程内容，由作者授权实验楼发布，未经允许，禁止转载、下载及非法传播。
