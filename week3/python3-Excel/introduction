@@ -1,0 +1,111 @@
+Python3 处理 Excel 文件
+介绍
+
+Excel 文件是十分常见的文件类型，学会使用 Python3 去处理和分析 Excel 文件能从一定程度上提升工作效率。本挑战中，我们将尝试使用能够处理 Excel 的第三方 Python 库，对实验楼的课程数据文件进行整理。首先，你需要打开 Xfce 终端，通过下面的操作下载所需要 Excel 文件。
+
+# 进入到 /home/shiyanlou/Code 目录
+$ cd /home/shiyanlou/Code
+
+# 下载实验楼课程数据文件
+$ wget http://labfile.oss.aliyuncs.com/courses/1013/week3/courses.xlsx
+
+实验楼的在线环境中尚未安装能直接打开 xlsx 文件的应用，上面的下载链接，在实验楼之外也可以使用，你可以下载到本地进行预览。
+数据集简介
+
+挑战提供的「实验楼课程数据 Excel 文件」中包含有两个表，它们分别是：
+1. students 表
+
+students 表中包含 485 条记录，统计了实验楼不同课程的学习人数。students 表预览如下：
+
+此处输入图片的描述
+2. time 表
+
+time 表中同样包含 485 条记录，统计了实验楼不同课程的的累计有效学习时间。time 表预览如下：
+
+此处输入图片的描述
+内容
+
+挑战内容包括两个：
+
+    将 students 表和 time 表中的内容，依据课程名称合并到同一张表格中，取名为 combine。
+    然后再依据课程创建时间的不同，按年份将 combine 表中的数据分割成若干个独立的 Excel 文件单独保存。
+
+结果示意图
+
+挑战需要得到两项结果。
+
+第一，合并数据，原 Excel 文件中新增 combine 表。
+
+此处输入图片的描述
+
+第二，得到按年份分割的若干个独立的表格，并存储在 /home/shiyanlou/Code/ 路径下方。
+
+此处输入图片的描述
+目标
+
+    代码保存到 Code 文件夹中，并以 challenge3_2.py 命名，即最终的代码文件为 /home/shiyanlou/Code/challenge3_2.py。
+    将分割后的文件存储在 /home/shiyanlou/Code/ 路径下方即可。
+    在原 Excel 文件中新增了 combine 表之后，覆盖存储原文件为 /home/shiyanlou/Code/courses.xlsx。
+    分割后的独立 Excel 文件必须以年份数字命名，例如 2014.xlsx。
+    分割后的独立 Excel 文件中只能存在唯一以相应年份数据命名的表格。
+    实验得到的全部 Excel 文件均为 .xlsx 后缀格式。
+    目前，能够处理 Excel 的第三方 Python 库比较多，其中接口友好且更新及时的有：xlwings, openpyxl, xlrd, pyexcel 等。在本次挑战中，规定必须使用 openpyxl 这个包。
+    当书写完成代码，并在环境中成功执行之后（即分割后的文件已生成），再点击 提交结果。
+
+提示代码
+
+使用下面列出的代码框架，补充其中的 TODO 两部分内容：
+
+# -*- coding: utf-8 -*-
+
+from openpyxl import load_workbook # 可以用来载入已有数据表格
+from openpyxl import Workbook # 可以用来处理新的数据表格
+import datetime # 可以用来处理时间相关的数据
+
+def combine():
+    '''
+    该函数可以用来处理原数据文件：
+    1. 合并表格并写入的 combine 表中
+    2. 保存原数据文件
+    '''
+    TODO
+
+def split():
+    '''
+    该函数可以用来分割文件：
+    1. 读取 combine 表中的数据
+    2. 将数据按时间分割
+    3. 写入不同的数据表中
+    '''
+    TODO
+
+# 执行
+if __name__ == '__main__':
+    combine()
+    split()
+
+注意，为避免 openpyxl 模块找不到的情况，务必使用 /home/shiyanlou/anaconda3/bin/python 执行程序。另外，在选择 Excel 列名的时候需要输入中文，可以在打开要编辑的文件的时候（vim 或 gedit 编辑器中），点击实验环境右下角的小键盘切换到中文输入法。程序执行过程如下：
+
+$ cd /home/shiyanlou/Code
+$ /home/shiyanlou/anaconda3/bin/python challenge3_2.py
+
+特别提醒：执行完成后，查看目录下是否有分割后的 2014.xlsx 等文件，确认无误后点击 提交结果。
+提示语
+
+    使用 from openpyxl import load_workbook 载入 load_workbook() 用以导入 Excel 文件。
+    使用 load_workbook.get_sheet_by_name() 载入 Excel 文件中的不同的表格。
+    使用 load_workbook.remove() 可以移除 Excel 文件中的不同的表格。
+    使用 from openpyxl import Workbook 载入 Workbook() 可以创建一个新的 Excel 文件。
+    Workbook().save('name.xlsx') 可以将对应的 Workbook 保存到本地。
+    openpyxl 载入的时间已经是 datetime 格式，你可以使用 import datetime 提供的相关方法对时间数据进行转换。
+    对于上面提到的模块和函数，你可以参考官方文档，官方文档提供了许多示例：
+        openpyxl 官方文档
+        datetime 官方文档
+
+挑战中遇到问题，请务必及时在讨论组里与助教及同组同学交流。
+知识点
+
+    Python3 基础语法
+    Python3 处理 Excel
+    openpyxl 模块的使用
+    根据官方文档学习使用新 Python 包
