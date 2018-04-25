@@ -1,0 +1,53 @@
+时间序列分析挑战
+介绍
+
+挑战提供了苹果公司 NASDAQ:AAPL 从 2009 年到 2016 年的股票交易数据，并汇总到文件 apple.csv，数据获取自 Google Finance。
+
+wget http://labfile.oss.aliyuncs.com/courses/764/apple.csv
+
+数据集前 5 行预览如下：
+
+         Date   Open   High    Low  Close     Volume
+0  2009-01-02  12.27  13.01  12.17  12.96  188749470
+1  2009-01-05  13.31  13.74  13.24  13.51  297211453
+2  2009-01-06  13.71  13.88  13.20  13.29  323043903
+3  2009-01-07  13.12  13.21  12.89  13.00  189300706
+4  2009-01-08  12.92  13.31  12.86  13.24  168365988
+
+数据共有 6 列，分别为：成交日期（Date）、开盘价格（Open）、最高价格（High）、最低价格（Low）、收盘价格（Close）、当天交易量（Volume）。
+
+挑战的目标是针对该数据文件进行时间序列分析，得到交易总量降序排名 第 2 的季度，并 返回该季度的成交总量。
+示例代码：
+
+# -*- coding:utf-8 -*-
+
+import pandas as pd
+
+
+def quarter_volume():
+    data = pd.read_csv('apple.csv', header=0)
+
+    '''
+    补充代码：
+    1. 使用 Pandas 选择数据
+    2. 转换为时间序列
+    3. 按季度重采样并排序
+    '''
+
+    return second_volume
+
+目标
+
+    函数名必须是 quarter_volume；
+    代码必须写入 ~/Code/apple_analysis.py 文件中；
+
+提示语
+
+    Offset='Q' 可直接按季度对时间序列重采样，明确其与 Offset='3M' 的区别。
+
+知识点
+
+    Pandas
+    DataFrame
+    时间序列
+    时间戳和时间戳索引
